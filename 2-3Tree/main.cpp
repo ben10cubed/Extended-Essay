@@ -1,3 +1,9 @@
+/*
+Credits to: https://github.com/Nickheythatsme/DataStructures/tree/master/C_Cpp/single_thread/trees/two_three_tree
+My code is roughly based off of this implementation, with minor changes to suit the needs of this Extended Essay
+*/
+
+
 #include "two_three_tree.h"
 #include <bits/stdc++.h>
 #include "windows.h"
