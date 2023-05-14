@@ -1,3 +1,8 @@
+/*
+Credits to https://blog.csdn.net/zhuziyu_edward/article/details/104342403
+The program is roughly based on this implementation with minor changes to suit the needs of this experiment.
+*/
+
 #include <bits/stdc++.h>
 #include "windows.h"
 #include "psapi.h"
