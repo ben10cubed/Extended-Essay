@@ -1,6 +1,7 @@
 /*
-Credits to https://blog.csdn.net/zhuziyu_edward/article/details/104342403
+Credits to zhuziyu_edward, the author to the article of https://blog.csdn.net/zhuziyu_edward/article/details/104342403
 The program is roughly based on this implementation with minor changes to suit the needs of this experiment.
+The program is under this license https://creativecommons.org/licenses/by-sa/4.0/
 */
 
 #include <bits/stdc++.h>
