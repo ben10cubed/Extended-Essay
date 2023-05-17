@@ -1,6 +1,6 @@
 # Extended-Essay
 ## Introduction
-Within this repository contains all the important programs used by me to both generate data, and collect data for my Extended Essay. I've included the credits to the owners' of the code within the actual programs.
+Within this repository contains all the important programs used by me to both generate data, and collect data for my Extended Essay. I've included the credits to the owners' of the code within the actual programs. For the 2-3 tree code, I have obtained permission directly from the owner, but just to further acknowledge the owner, thank you Mr. Nicholas Grout for allowing me to use your code.
 
 ## What is what?
 Things should be relatively straightforward. Each forlder contains exactly what the folder names suggest. The only weird thing may be the 1e7set.zip. This dataset was too large to be uploaded directly to Github, so I had to compress it before uploading. Simply unzip it, and it should be ready to use. All these datasets are generated through the use of the random_number_generator.cpp program.
