@@ -10,133 +10,77 @@ The program is under this license https://creativecommons.org/licenses/by-sa/4.0
 
 using namespace std;
 using namespace std::chrono;
-#define ERR_NOT_FOUND -1000000000
 
-typedef unsigned int llu;
-typedef unsigned int DataType;
-int cnt1 = 0;
-class vEB {
-protected:
-    llu size; // size of van emde boas tree
-    llu subSize;
-    llu minValue, maxValue; // store min and max value
-    vEB *summary;
-    vEB **cluster;
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define MAX(X, Y) (((Y) < (X)) ? (X) : (Y))
 
-    llu high(DataType x) {
-        return x / subSize;
-    }
+#define MINSIZE 2
 
-    llu low(DataType x) {
-        return x % subSize;
-    }
-
-public:
-    vEB(llu u) : size(u), minValue(-1), maxValue(-1) {
-        if (u == 2) {
-            this->summary = NULL;
-            this->cluster = NULL;
-        }
-        else {
-            subSize = (llu) ceil(sqrt(u));
-            size = subSize * subSize;
-            this->summary = new vEB(subSize);
-            this->cluster = new vEB*[subSize];
-            for (int i = 0; i < subSize; i++)
-                this->cluster[i] = NULL;
-        }
-    }
-
-    virtual ~vEB() {
-        delete summary;
-        if (cluster != NULL) {
-            for (int i = 0; i < subSize; i++)
-                delete cluster[i];
-        }
-        // delete minValue;
-        // delete maxValue;
-    }
-
-    bool find(DataType x) {
-        if (size == 2) {
-            if (minValue == -1)
-                return false;
-            else if (x == minValue || x == maxValue)
-                return true;
-            else
-                return false;
-        }
-        else {
-            if (minValue == -1)
-                return false;
-            if (x < minValue || x > maxValue)
-                return false;
-            if (x == minValue || x == maxValue)
-                return true;
-            if (cluster[high(x)] == NULL)
-                return false;
-            return cluster[high(x)]->find(low(x));
-        }
-    }
-
-    
-
-    void insert(DataType x) {
-        if (size == 2) {
-            if (minValue == -1)
-                minValue = x;
-            else
-                minValue = min(minValue, x);
-            if (maxValue == -1)
-                maxValue = x;
-            else
-                maxValue = max(maxValue, x);
-        }
-        else {
-            if (minValue == -1) {
-                minValue = (x);
-                maxValue = (x);
-            }
-            else {
-                if (x < minValue)
-                    swap(minValue, x);
-                if (x > maxValue)
-                    maxValue = x;
-                if (cluster[high(x)] == NULL) {
-                    cnt1++;
-                    cluster[high(x)] = new vEB(subSize);
-                    summary->insert(high(x));
-                }
-                cluster[high(x)]->insert(low(x));
-            }
-        }
-    }
-
-
-    DataType getMin() {
-        if (minValue == -1)
-            return ERR_NOT_FOUND;
-        else
-            return minValue;
-    }
-
-    DataType getMax() {
-        if (maxValue == -1)
-            return ERR_NOT_FOUND;
-        else
-            return maxValue;
-    }
-};
-
-bool test_performance(void);
-
-int main()
+class vEB
 {
-    if(!test_performance()) {
-        cout << "Error testing tree's performance" << endl;
-    }
-    return 0;
-}
+    private:
+        unsigned int u; // Size of the universe of the current recursive vEB
+        unsigned int subU; //The sizes of the sub universes directly connected to the current vEB (Size of clusters)
+        unsigned int* min;
+        unsigned int* max; //Min Max help to reduce the amount of potential recursive steps
+        vEB *summary;
+        vEB **cluster;
+
+        unsigned int high(unsigned int x) {
+            return x/subU;
+        }
+
+        unsigned int low(unsigned int x) {
+            return x%subU;
+        }
+
+    public:
+        vEB(unsigned int u) {
+            this->u = u;
+            min = max = NULL;
+            if (u == MINSIZE) {
+                this->summary = NULL;
+                this->cluster = NULL;
+            } else {
+                subU = ceil(sqrt(u));
+                u = subU * subU;
+                //Allocate the necessary memory for the clusters if they have yet been accessed yet.
+                //Memory allocation only needs to be done once per cluster and summary.
+                this->summary = new vEB(subU);
+                this->cluster = new vEB*[subU];
+
+                for (unsigned int i=0; i<subU; i++) {
+                    this->cluster[i] = NULL;
+                }
+            }
+        }
+        
+
+        void insert(unsigned int x) {
+            if (min == NULL) {
+                max = new unsigned int(x);
+                min = new unsigned int(x);
+            } else{
+                if (x < *min) {
+                    swap(x, *min);
+                }
+
+                if (u > 2) {
+                    unsigned int highIndex = high(x);
+                    unsigned int lowIndex  = low(x);
+                    if (cluster[highIndex] == NULL) {
+                        cluster[highIndex] = new vEB(subU);
+                        summary->insert(highIndex);
+                        cluster[highIndex]->insert(lowIndex);
+                    } else {
+                        cluster[highIndex]->insert(lowIndex);
+                    }
+                }
+
+                if (x > *max) *max = x;
+            }
+        }
+};
 
 bool test_performance()
 {
@@ -171,6 +115,14 @@ bool test_performance()
     
     cout << physMemUsedByMe << endl;
     cout << cnt << endl;
-    cout << cnt1 << endl;
     return true;
+}
+
+
+int main()
+{
+    if(!test_performance()) {
+        cout << "Error testing tree's performance" << endl;
+    }
+    return 0;
 }
